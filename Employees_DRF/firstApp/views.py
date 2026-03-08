@@ -3,12 +3,7 @@ from django.http import JsonResponse
 from firstApp.models import emp
 
 def employeeView(request):
-    emp_ = {
-        'id':1,
-        'name':'Aranya',
-        'salary':3698000
-    }
-
+    # Fetch all employees data
     data = emp.objects.all()
     response = {'data':list(data.values('name','salary'))}
     return JsonResponse(response)
