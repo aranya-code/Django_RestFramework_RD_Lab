@@ -1,67 +1,102 @@
-# Employees DRF
+# Employees API – Django REST Framework
 
-A Django backend project demonstrating a clean and scalable project structure for managing employee-related data.  
-This project is suitable for learning Django fundamentals and can be easily extended using Django Rest Framework (DRF).
+## Overview
 
----
+Employees API is a simple RESTful API built using **Django REST Framework (DRF)**.  
+The project demonstrates how to create and manage employee data through API endpoints using Django models, serializers, and views.
 
-## 🚀 Project Overview
+Django REST Framework is a powerful toolkit for building Web APIs in Django, providing features such as serialization, authentication, and browsable APIs.
 
-**Employees DRF** is a Django project built with clarity and best practices in mind.  
-It separates application logic from project configuration, uses environment variables for sensitive data, and follows Django’s recommended layout.
-
-This project is ideal for:
-- Django beginners
-- Backend-focused learning
-- Serving as a base for REST API development
+This project is part of the **Django REST Framework RD Lab**, created for learning and practicing DRF concepts.
 
 ---
 
-## 📂 Project Structure
+## Features
 
-EMPLOYEES_DRF/
-├── firstApp/ # Main Django application
-│ ├── migrations/
-│ ├── init.py
-│ ├── admin.py
-│ ├── apps.py
-│ ├── models.py
-│ ├── tests.py
-│ ├── urls.py
-│ └── views.py
+- Create Employee records
+- Retrieve employee data
+- Update employee information
+- Delete employee records
+- RESTful API endpoints
+- JSON response handling
+- Django REST Framework serializers
+
+---
+
+## Tech Stack
+
+Language: Python  
+Framework: Django  
+API Framework: Django REST Framework  
+Database: SQLite  
+Tools: Postman / Browser API testing
+
+---
+
+## Project Structure
+```
+Employees_DRF/
 │
-├── firstproject/ # Django project configuration
-│ ├── init.py
-│ ├── asgi.py
-│ ├── settings.py
-│ ├── urls.py
-│ └── wsgi.py
+├── Employees_DRF/          # Project configuration
+│   ├── __init__.py
+│   ├── settings.py
+│   ├── urls.py
+│   ├── asgi.py
+│   └── wsgi.py
 │
-├── .env # Environment variables (ignored by Git)
-├── db.sqlite3 # Development database
+├── employees/              # Django application
+│   ├── migrations/
+│   │   └── __init__.py
+│   │
+│   ├── models.py
+│   ├── serializers.py
+│   ├── views.py
+│   ├── urls.py
+│   ├── admin.py
+│   └── apps.py
+│
+├── db.sqlite3
 ├── manage.py
-├── newEmployeeDB.sql # SQL dump / reference file
 └── README.md
+```
+---
 
+## API Endpoints Example
+
+| Method | Endpoint | Description |
+|------|------|------|
+| GET | /emp/ | Retrieve all employees |
 
 
 ---
 
-## 🛠️ Tech Stack
+## Learning Objectives
 
-- **Language:** Python  
-- **Framework:** Django  
-- **Database:** SQLite (development)  
-- **Environment Management:** `.env` file  
+This project helps in understanding:
+
+- Django REST Framework basics
+- Creating serializers
+- Building RESTful APIs
+- Handling HTTP methods (GET, POST, PUT, DELETE)
+- API testing using browser or Postman
 
 ---
 
-## 📋 Prerequisites
+## Future Improvements
 
-Make sure you have the following installed:
+- Add authentication
+- Add pagination
+- Add filtering and search
+- Improve API documentation
 
-- Python 3.9+
-- pip
+---
+
+## Repository
+
+https://github.com/aranya-code/Django_RestFramework_RD_Lab
 
 
+## Author
 
+Aranya Majumdar  
+GitHub: https://github.com/aranya-code
