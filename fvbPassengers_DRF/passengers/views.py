@@ -7,12 +7,14 @@ from rest_framework.decorators import api_view
 
 @api_view(['GET', 'POST'])
 def passenger_list(request):
-    
+
+    # Retrieve all the Passengers    
     if request.method == 'GET':
         all_passenger = Passengers.objects.all()
         serializer = PassengerSerializer(all_passenger, many= True)
         return Response(serializer.data)
     
+    # Create a Passenger
     elif request.method == 'POST':
         serializer = PassengerSerializer(data = request.data)
         if serializer.is_valid():
@@ -22,15 +24,18 @@ def passenger_list(request):
 
 @api_view(['GET', 'PUT', 'DELETE'])
 def passenger_detail(request, pk):
+    # Getting Passenger detail by primary key
     try:
         passenger = Passengers.objects.get(pk=pk)
     except Passengers.DoesNotExist:
         return Response(status=status.HTTP_404_NOT_FOUND)
     
+    # Retreive data
     if request.method =='GET':
         serializer = PassengerSerializer(passenger)
         return Response(serializer.data, status=status.HTTP_200_OK)
     
+    # Update data
     elif request.method == 'PUT':
         serializer=PassengerSerializer(passenger,data = request.data)
         if serializer.is_valid():
@@ -38,6 +43,7 @@ def passenger_detail(request, pk):
             return Response(serializer.data, status= status.HTTP_201_CREATED)
         return Response (serializer.errors, status= status.HTTP_400_BAD_REQUEST)
     
+    # Delete data
     elif request.method == 'DELETE':
         passenger.delete()
         return Response (status=status.HTTP_204_NO_CONTENT)
