@@ -100,7 +100,7 @@ class CourseDetail(APIView):
     
 
     def delete(self, request, pk):
-        course = Course.get_object(pk)
+        course = self.get_object(pk)
         course.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
