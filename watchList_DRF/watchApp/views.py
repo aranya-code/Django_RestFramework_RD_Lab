@@ -20,7 +20,7 @@ class MovieList(APIView):
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
 class MovieDetail(APIView):
     def get_pk(self, pk):
@@ -42,7 +42,7 @@ class MovieDetail(APIView):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors)
     
-    def delete(self, pk):
+    def delete(self, request, pk):
         movie = self.get_pk(pk)
         movie.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
