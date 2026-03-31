@@ -29,5 +29,5 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('',include(router.urls)),
     path('flights/findflights',views.find_flights),
-    path('api-token-auth/', obtain_auth_token, name='api=token-auth')
+    path('api-token-auth/', obtain_auth_token, name='api=token-auth'),
 ]
