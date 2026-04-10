@@ -16,7 +16,13 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
+from cricket import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('score/list/', views.ScoreSheet.as_view(), name= 'Scores'),
+    path('score/add/', views.ScoreSheet.as_view(), name= 'Scores-add'),
+    path('score/detail/<int:jersey_no>', views.PlayerDetail.as_view(), name= 'Player-detail'),
+    path('score/update/<int:jersey_no>', views.PlayerDetail.as_view(), name= 'Player-update'),
+    path('score/delete/<int:jersey_no>', views.PlayerDetail.as_view(), name= 'Player-delete')
 ]
