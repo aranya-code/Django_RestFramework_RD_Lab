@@ -9,7 +9,6 @@ class ScoreCard(models.Model):
                  ('wk', 'Wicket Keeper'),
                   ('c', 'Captain')]
 
-    id = models.IntegerField(primary_key= True, auto_created=True)
     player_name = models.CharField(max_length=100)
     jersey_no = models.IntegerField(unique= True)
     technical_skill = models.CharField(default='batter', choices=skills)
