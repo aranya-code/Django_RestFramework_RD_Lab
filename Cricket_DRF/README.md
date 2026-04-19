@@ -4,7 +4,6 @@ A RESTful API built using **Django REST Framework (DRF)** to manage cricket play
 This project supports full CRUD operations along with validation, custom responses, and partial updates.
 
 ---
-
 ## 🚀 Features
 
 * ✅ Add player scorecard
@@ -24,6 +23,39 @@ This project supports full CRUD operations along with validation, custom respons
 * Django
 * Django REST Framework (DRF)
 * SQLite (default)
+
+---
+
+
+```mermaid
+erDiagram
+    TEAM ||--o{ SCORECARD : "rosters"
+    MATCH ||--o{ SCORECARD : "generates"
+
+    TEAM {
+        int id PK
+        string name
+        string coach
+    }
+
+    MATCH {
+        int id PK
+        date match_date
+        string venue
+    }
+
+    SCORECARD {
+        int id PK
+        string player_name
+        int jersey_no UK "unique=True"
+        string technical_skill "choices: batter, bowler, ar, wk, c"
+        int runs "default=0"
+        int wickets "default=0"
+        int catches "default=0"
+        string status "default='Not Out'"
+    }
+
+```
 
 ---
 
