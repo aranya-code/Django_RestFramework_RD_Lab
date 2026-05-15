@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flight Reserve</title>
+    <style>
+        /* Base Styles */
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: #f9fafb;
+            color: #333;
+            margin: 0;
+            padding: 40px 20px;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        h1, p.subtitle {
+            text-align: center;
+        }
+        h1 { margin-bottom: 5px; color: #111827; }
+        p.subtitle { color: #6b7280; margin-bottom: 30px; }
+        
+        /* Card & Forms */
+        .card {
+            background: #fff;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            padding: 24px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            margin-bottom: 24px;
+        }
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+        }
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+        label {
+            font-size: 14px;
+            font-weight: 500;
+            margin-bottom: 6px;
+            color: #374151;
+        }
+        input {
+            padding: 10px;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            font-size: 16px;
+        }
+        input:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+        }
+        
+        /* Buttons */
+        button {
+            padding: 10px 16px;
+            border: none;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        .btn-primary {
+            background-color: #2563eb;
+            color: white;
+            width: 100%;
+            margin-top: 10px;
+        }
+        .btn-primary:hover { background-color: #1d4ed8; }
+        .btn-success { background-color: #10b981; color: white; }
+        .btn-success:hover { background-color: #059669; }
+        .btn-secondary { background-color: #fff; border: 1px solid #d1d5db; color: #374151; width: 100%; }
+        .btn-secondary:hover { background-color: #f3f4f6; }
+        
+        /* Flight List */
+        .flight-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 0;
+            border-bottom: 1px solid #e5e7eb;
+        }
+        .flight-item:last-child { border-bottom: none; }
+        .flight-info h3 { margin: 0 0 4px 0; font-size: 18px; }
+        .flight-info p { margin: 0; color: #6b7280; font-size: 14px; }
+
+        /* Utility */
+        .hidden { display: none; }
+        .status-message {
+            padding: 16px;
+            background-color: #d1fae5;
+            color: #065f46;
+            border-radius: 6px;
+            text-align: center;
+            font-weight: 500;
+            margin-bottom: 24px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Flight Reserve</h1>
+    <p class="subtitle">Find and book your next journey.</p>
+
+    <div id="statusMessage" class="status-message hidden"></div>
+
+    <div class="card" id="searchSection">
+        <form id="searchForm">
+            <div class="form-grid">
+                <div class="form-group">
+                    <label for="departureCity">From</label>
+                    <input type="text" id="departureCity" required placeholder="Departure City">
+                </div>
+                <div class="form-group">
+                    <label for="arrivalCity">To</label>
+                    <input type="text" id="arrivalCity" required placeholder="Arrival City">
+                </div>
+                <div class="form-group">
+                    <label for="departureDate">Date</label>
+                    <input type="date" id="departureDate" required>
+                </div>
+            </div>
+            <button type="submit" class="btn-primary">Search Flights</button>
+        </form>
+    </div>
+
+    <div class="card hidden" id="resultsSection">
+        <h2>Available Flights</h2>
+        <div id="flightList"></div>
+    </div>
+
+    <div class="card hidden" id="bookingSection">
+        <h2 id="bookingHeader">Book Flight</h2>
+        <form id="bookingForm">
+            <div class="form-group" style="margin-bottom: 16px;">
+                <label for="passengerName">Full Name</label>
+                <input type="text" id="passengerName" required>
+            </div>
+            <div class="form-group" style="margin-bottom: 16px;">
+                <label for="passengerEmail">Email</label>
+                <input type="email" id="passengerEmail" required>
+            </div>
+            <div class="form-group" style="margin-bottom: 16px;">
+                <label for="passengerPhone">Phone</label>
+                <input type="tel" id="passengerPhone" required>
+            </div>
+            <div style="display: flex; gap: 16px; margin-top: 24px;">
+                <button type="submit" class="btn-primary" style="margin-top: 0;">Confirm Booking</button>
+                <button type="button" class="btn-secondary" id="cancelBtn">Cancel</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    // State variables
+    let selectedFlightId = null;
+
+    // DOM Elements
+    const searchForm = document.getElementById('searchForm');
+    const resultsSection = document.getElementById('resultsSection');
+    const flightList = document.getElementById('flightList');
+    const bookingSection = document.getElementById('bookingSection');
+    const bookingForm = document.getElementById('bookingForm');
+    const bookingHeader = document.getElementById('bookingHeader');
+    const cancelBtn = document.getElementById('cancelBtn');
+    const statusMessage = document.getElementById('statusMessage');
+
+    // 1. Search for Flights
+    searchForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        statusMessage.classList.add('hidden');
+        
+        const searchData = {
+            departureCity: document.getElementById('departureCity').value,
+            arrivalCity: document.getElementById('arrivalCity').value,
+            departureDate: document.getElementById('departureDate').value
+        };
+
+        try {
+            const response = await fetch('http://127.0.0.1:8000/flights/findflights', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(searchData)
+            });
+            const flights = await response.json();
+            
+            renderFlights(flights);
+            resultsSection.classList.remove('hidden');
+            bookingSection.classList.add('hidden');
+            
+        } catch (error) {
+            console.error("Error fetching flights:", error);
+            showStatus("Failed to communicate with the server.", false);
+        }
+    });
+
+    // Render the flight list HTML
+    function renderFlights(flights) {
+        flightList.innerHTML = ''; // Clear previous results
+        
+        if (flights.length === 0) {
+            flightList.innerHTML = '<p>No flights found for this route and date.</p>';
+            return;
+        }
+
+        flights.forEach(flight => {
+            const flightDiv = document.createElement('div');
+            flightDiv.className = 'flight-item';
+            flightDiv.innerHTML = `
+                <div class="flight-info">
+                    <h3>${flight.airlines} - ${flight.flightNumber}</h3>
+                    <p>Departure: ${flight.departureTime}</p>
+                </div>
+                <button class="btn-success" onclick="selectFlight(${flight.id}, '${flight.airlines}', '${flight.departureCity}', '${flight.arrivalCity}')">Select</button>
+            `;
+            flightList.appendChild(flightDiv);
+        });
+    }
+
+    // 2. Select a Flight
+    window.selectFlight = function(id, airline, dep, arr) {
+        selectedFlightId = id;
+        bookingHeader.textContent = `Booking: ${airline} (${dep} to ${arr})`;
+        resultsSection.classList.add('hidden');
+        bookingSection.classList.remove('hidden');
+    };
+
+    // 3. Submit Booking
+    bookingForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        
+        const passengerData = {
+            flightNumber: selectedFlightId, // Backend expects flightNumber as the DB ID
+            name: document.getElementById('passengerName').value,
+            email: document.getElementById('passengerEmail').value,
+            phone: document.getElementById('passengerPhone').value
+        };
+
+        try {
+            const response = await fetch('http://127.0.0.1:8000/flights/savereservation', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(passengerData)
+            });
+
+            if (response.status === 201) {
+                showStatus("Success! Your flight is booked.", true);
+                bookingSection.classList.add('hidden');
+                bookingForm.reset();
+            } else {
+                showStatus("Booking failed. Please check your data.", false);
+            }
+        } catch (error) {
+            console.error("Error booking flight:", error);
+            showStatus("Failed to communicate with the server.", false);
+        }
+    });
+
+    // Cancel Booking
+    cancelBtn.addEventListener('click', () => {
+        bookingSection.classList.add('hidden');
+        resultsSection.classList.remove('hidden');
+    });
+
+    // Utility: Show Status Messages
+    function showStatus(message, isSuccess) {
+        statusMessage.textContent = message;
+        statusMessage.style.backgroundColor = isSuccess ? '#d1fae5' : '#fee2e2';
+        statusMessage.style.color = isSuccess ? '#065f46' : '#991b1b';
+        statusMessage.classList.remove('hidden');
+    }
+</script>
+
+</body>
+</html>
